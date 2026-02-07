@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 
 export default function RadioApp() {
-  const { currentTrack, nextTrack, prevTrack } = useStation();
+  const { currentTrack, initialOffset, nextTrack, prevTrack } = useStation();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -33,6 +33,7 @@ export default function RadioApp() {
         videoId={currentTrack.id}
         isPlaying={isPlaying}
         volume={volume}
+        initialOffset={initialOffset}
         onTimeUpdate={setCurrentTime}
         onDurationChange={setDuration}
         onEnded={nextTrack}

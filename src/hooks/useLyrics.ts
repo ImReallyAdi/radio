@@ -19,7 +19,8 @@ export const useLyrics = (artist: string, title: string) => {
       setLyrics(null);
 
       try {
-        const query = encodeURIComponent(`${artist} ${title}`);
+        const queryStr = artist === "Unknown Artist" || !artist ? title : `${artist} ${title}`;
+        const query = encodeURIComponent(queryStr);
         const response = await fetch(`https://lrclib.net/api/search?q=${query}`);
         const data = await response.json();
 

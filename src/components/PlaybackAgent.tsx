@@ -7,6 +7,7 @@ interface PlaybackAgentProps {
   videoId: string;
   isPlaying: boolean;
   volume: number;
+  initialOffset?: number;
   onTimeUpdate: (currentTime: number) => void;
   onDurationChange: (duration: number) => void;
   onEnded: () => void;
@@ -17,6 +18,7 @@ export const PlaybackAgent: React.FC<PlaybackAgentProps> = ({
   videoId,
   isPlaying,
   volume,
+  initialOffset = 0,
   onTimeUpdate,
   onDurationChange,
   onEnded,
@@ -47,8 +49,12 @@ export const PlaybackAgent: React.FC<PlaybackAgentProps> = ({
     }
 
     intervalRef.current = setInterval(() => {
-      if (playerRef.current && playerRef.current.getCurrentTime) {
-        onTimeUpdate(playerRef.current.getCurrentTime());
+      try {
+        if (playerRef.current && typeof playerRef.current.getCurrentTime === 'function') {
+          onTimeUpdate(playerRef.current.getCurrentTime());
+        }
+      } catch (e) {
+        // Ignore
       }
     }, 100);
 
@@ -63,6 +69,11 @@ export const PlaybackAgent: React.FC<PlaybackAgentProps> = ({
     playerRef.current = event.target;
     playerRef.current.setVolume(volume);
     onDurationChange(playerRef.current.getDuration());
+
+    if (initialOffset > 0 && typeof playerRef.current.seekTo === 'function') {
+      playerRef.current.seekTo(initialOffset, true);
+    }
+
     if (isPlaying) {
       playerRef.current.playVideo();
     }

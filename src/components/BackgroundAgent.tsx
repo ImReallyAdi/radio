@@ -10,16 +10,24 @@ interface BackgroundAgentProps {
 
 export const BackgroundAgent: React.FC<BackgroundAgentProps> = ({ videoId }) => {
   const [dominantColor, setDominantColor] = useState<[number, number, number]>([0, 0, 0]);
-  const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+  const thumbnailUrl = videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : "";
 
   useEffect(() => {
+    if (!thumbnailUrl) return;
+
     const img = new Image();
     img.crossOrigin = "Anonymous";
     img.src = thumbnailUrl;
     img.onload = () => {
-      const colorThief = new ColorThief();
-      const color = colorThief.getColor(img);
-      setDominantColor(color);
+      try {
+        const colorThief = new ColorThief();
+        const color = colorThief.getColor(img);
+        if (color) {
+          setDominantColor(color);
+        }
+      } catch (e) {
+        console.error("ColorThief error:", e);
+      }
     };
   }, [thumbnailUrl]);
 
@@ -38,7 +46,7 @@ export const BackgroundAgent: React.FC<BackgroundAgentProps> = ({ videoId }) => 
           <div
             className="absolute inset-0 bg-cover bg-center scale-110 blur-[80px] brightness-50"
             style={{
-              backgroundImage: `url(${thumbnailUrl})`,
+              backgroundImage: thumbnailUrl ? `url(${thumbnailUrl})` : "none",
               backgroundColor: `rgb(${dominantColor.join(",")})`
             }}
           />

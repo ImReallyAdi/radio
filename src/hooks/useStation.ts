@@ -4,44 +4,53 @@ import { useState, useCallback, useEffect } from "react";
 import { TRACKS } from "@/lib/tracks";
 
 export const useStation = () => {
-  const [currentTrackIndex, setCurrentTrackIndex] = useState<number>(0);
-  const [history, setHistory] = useState<number[]>([]);
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+  const [initialOffset, setInitialOffset] = useState(0);
+  const [mounted, setMounted] = useState(false);
+
+  const calculateSync = useCallback(() => {
+    const totalDuration = TRACKS.reduce((acc, t) => acc + (t.duration || 0), 0);
+    const now = Math.floor(Date.now() / 1000);
+    const elapsedTotal = now % totalDuration;
+
+    let cumulative = 0;
+    for (let i = 0; i < TRACKS.length; i++) {
+      const trackDuration = TRACKS[i].duration || 180;
+      if (elapsedTotal < cumulative + trackDuration) {
+        setCurrentTrackIndex(i);
+        setInitialOffset(elapsedTotal - cumulative);
+        return;
+      }
+      cumulative += trackDuration;
+    }
+  }, []);
 
   useEffect(() => {
-    setCurrentTrackIndex(Math.floor(Math.random() * TRACKS.length));
-  }, []);
+    setMounted(true);
+    calculateSync();
+    const interval = setInterval(calculateSync, 30000);
+    return () => clearInterval(interval);
+  }, [calculateSync]);
 
   const currentTrack = TRACKS[currentTrackIndex];
 
   const nextTrack = useCallback(() => {
-    setHistory((prev) => {
-      const newHistory = [currentTrackIndex, ...prev].slice(0, 5);
-      return newHistory;
-    });
-
-    let nextIndex;
-    do {
-      nextIndex = Math.floor(Math.random() * TRACKS.length);
-    } while (
-      nextIndex === currentTrackIndex ||
-      history.includes(nextIndex)
-    );
-
-    setCurrentTrackIndex(nextIndex);
-  }, [currentTrackIndex, history]);
+    calculateSync();
+  }, [calculateSync]);
 
   const prevTrack = useCallback(() => {
-    if (history.length > 0) {
-      const prevIndex = history[0];
-      setHistory((prev) => prev.slice(1));
-      setCurrentTrackIndex(prevIndex);
-    }
-  }, [history]);
+    calculateSync();
+  }, [calculateSync]);
+
+  // To prevent hydration mismatch, we ensure the first render matches SSR (TRACKS[0], offset 0)
+  // and then update once mounted.
+  // Wait, if we return DIFFERENT values after mounting, we must handle it correctly.
 
   return {
-    currentTrack,
+    currentTrack: mounted ? currentTrack : TRACKS[0],
+    initialOffset: mounted ? initialOffset : 0,
     nextTrack,
     prevTrack,
-    hasHistory: history.length > 0,
+    hasHistory: false,
   };
 };
