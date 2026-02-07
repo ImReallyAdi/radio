@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Play, Pause, SkipBack, SkipForward, Volume2, Share2, Youtube } from "lucide-react";
+import { Play, Pause, Volume2, Share2, Youtube, ListMusic } from "lucide-react";
 import { motion } from "framer-motion";
 import { BlurFade } from "@/components/ui/blur-fade";
 
@@ -13,30 +13,26 @@ interface UIAgentProps {
     artist: string;
     id: string;
   };
+  artworkUrl?: string;
   isPlaying: boolean;
   currentTime: number;
   duration: number;
   volume: number;
   onTogglePlay: () => void;
-  onNext: () => void;
-  onPrev: () => void;
   onVolumeChange: (volume: number) => void;
-  onShowLyrics: () => void;
-  showLyrics: boolean;
+  onToggleLyrics: () => void;
 }
 
 export const UIAgent: React.FC<UIAgentProps> = ({
   track,
+  artworkUrl,
   isPlaying,
   currentTime,
   duration,
   volume,
   onTogglePlay,
-  onNext,
-  onPrev,
   onVolumeChange,
-  onShowLyrics,
-  showLyrics,
+  onToggleLyrics,
 }) => {
   const formatTime = (time: number) => {
     const mins = Math.floor(time / 60);
@@ -44,13 +40,31 @@ export const UIAgent: React.FC<UIAgentProps> = ({
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
+  const handleShare = async () => {
+    const shareData = {
+      title: "Radio",
+      text: `Listening to ${track.title} by ${track.artist} on Radio`,
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        alert("Link copied to clipboard!");
+      }
+    } catch (err) {
+      console.error("Error sharing:", err);
+    }
+  };
+
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
-  const thumbnailUrl = `https://img.youtube.com/vi/${track.id}/maxresdefault.jpg`;
+  const displayArtwork = artworkUrl || `https://img.youtube.com/vi/${track.id}/maxresdefault.jpg`;
 
   return (
     <div className={cn(
-      "flex flex-col h-full transition-all duration-700",
-      showLyrics ? "opacity-0 pointer-events-none scale-95" : "opacity-100"
+      "flex flex-col h-full transition-all duration-700"
     )}>
       {/* Album Art Section */}
       <div className="flex-1 flex items-center justify-center p-4 md:p-12 overflow-hidden">
@@ -62,7 +76,7 @@ export const UIAgent: React.FC<UIAgentProps> = ({
             className="relative aspect-square w-full max-w-[80vw] md:max-w-md rounded-2xl overflow-hidden shadow-2xl shadow-black/50 group"
           >
             <img
-              src={thumbnailUrl}
+              src={displayArtwork}
               alt={track.title}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
@@ -96,21 +110,21 @@ export const UIAgent: React.FC<UIAgentProps> = ({
               transition={{ type: "spring", bounce: 0, duration: 0.5 }}
             />
           </div>
-          <div className="flex justify-between text-xs text-white/40 font-medium tabular-nums">
+          <div className="flex justify-between items-center text-xs text-white/40 font-medium tabular-nums">
             <span>{formatTime(currentTime)}</span>
+            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-sm bg-red-500/10 text-red-500 font-bold tracking-wider text-[10px]">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+              </span>
+              LIVE
+            </div>
             <span>{formatTime(duration)}</span>
           </div>
         </div>
 
         {/* Main Controls */}
-        <div className="flex items-center justify-between">
-          <button
-            onClick={onPrev}
-            className="p-4 text-white/80 hover:text-white transition-colors active:scale-90"
-          >
-            <SkipBack size={32} fill="currentColor" />
-          </button>
-
+        <div className="flex items-center justify-center">
           <button
             onClick={onTogglePlay}
             className="p-6 bg-white text-black rounded-full hover:scale-105 transition-transform active:scale-95 shadow-xl"
@@ -121,21 +135,22 @@ export const UIAgent: React.FC<UIAgentProps> = ({
               <Play size={40} fill="currentColor" className="ml-1" />
             )}
           </button>
-
-          <button
-            onClick={onNext}
-            className="p-4 text-white/80 hover:text-white transition-colors active:scale-90"
-          >
-            <SkipForward size={32} fill="currentColor" />
-          </button>
         </div>
 
         {/* Bottom Bar */}
         <div className="flex items-center justify-between pt-4">
           <div className="flex items-center gap-4">
             <button
-              onClick={onShowLyrics}
+              onClick={onToggleLyrics}
               className="p-2 text-white/40 hover:text-white transition-colors"
+              title="Lyrics"
+            >
+              <ListMusic size={20} />
+            </button>
+            <button
+              onClick={handleShare}
+              className="p-2 text-white/40 hover:text-white transition-colors"
+              title="Share"
             >
               <Share2 size={20} />
             </button>

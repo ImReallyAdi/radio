@@ -6,18 +6,19 @@ import ColorThief from "colorthief";
 
 interface BackgroundAgentProps {
   videoId: string;
+  artworkUrl?: string;
 }
 
-export const BackgroundAgent: React.FC<BackgroundAgentProps> = ({ videoId }) => {
+export const BackgroundAgent: React.FC<BackgroundAgentProps> = ({ videoId, artworkUrl }) => {
   const [dominantColor, setDominantColor] = useState<[number, number, number]>([0, 0, 0]);
-  const thumbnailUrl = videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : "";
+  const displayArtwork = artworkUrl || (videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : "");
 
   useEffect(() => {
-    if (!thumbnailUrl) return;
+    if (!displayArtwork) return;
 
     const img = new Image();
     img.crossOrigin = "Anonymous";
-    img.src = thumbnailUrl;
+    img.src = displayArtwork;
     img.onload = () => {
       try {
         const colorThief = new ColorThief();
@@ -25,11 +26,11 @@ export const BackgroundAgent: React.FC<BackgroundAgentProps> = ({ videoId }) => 
         if (color) {
           setDominantColor(color);
         }
-      } catch (e) {
-        console.error("ColorThief error:", e);
+      } catch {
+        // Silently fail for color extraction, default color remains
       }
     };
-  }, [thumbnailUrl]);
+  }, [displayArtwork]);
 
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden bg-black">
@@ -46,7 +47,7 @@ export const BackgroundAgent: React.FC<BackgroundAgentProps> = ({ videoId }) => 
           <div
             className="absolute inset-0 bg-cover bg-center scale-110 blur-[80px] brightness-50"
             style={{
-              backgroundImage: thumbnailUrl ? `url(${thumbnailUrl})` : "none",
+              backgroundImage: displayArtwork ? `url(${displayArtwork})` : "none",
               backgroundColor: `rgb(${dominantColor.join(",")})`
             }}
           />
