@@ -53,7 +53,7 @@ export const PlaybackAgent: React.FC<PlaybackAgentProps> = ({
         if (playerRef.current && typeof playerRef.current.getCurrentTime === 'function') {
           onTimeUpdate(playerRef.current.getCurrentTime());
         }
-      } catch (e) {
+      } catch {
         // Ignore
       }
     }, 100);

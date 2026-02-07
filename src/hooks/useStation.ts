@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
-import { TRACKS } from "@/lib/tracks";
+import { useState, useCallback, useEffect, useRef } from "react";
+import { TRACKS, Track } from "@/lib/tracks";
 
 export const useStation = () => {
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [initialOffset, setInitialOffset] = useState(0);
   const [mounted, setMounted] = useState(false);
+  const [history, setHistory] = useState<Track[]>([]);
+  const lastTrackId = useRef<string | null>(null);
 
   const calculateSync = useCallback(() => {
     const totalDuration = TRACKS.reduce((acc, t) => acc + (t.duration || 0), 0);
@@ -34,7 +36,28 @@ export const useStation = () => {
 
   const currentTrack = TRACKS[currentTrackIndex];
 
+  useEffect(() => {
+    if (mounted && currentTrack) {
+      if (lastTrackId.current !== currentTrack.id) {
+        if (lastTrackId.current !== null) {
+          const prevTrack = TRACKS.find(t => t.id === lastTrackId.current);
+          if (prevTrack) {
+            setHistory(prev => {
+              if (prev.some(t => t.id === prevTrack.id)) {
+                return [prevTrack, ...prev.filter(t => t.id !== prevTrack.id)].slice(0, 20);
+              }
+              return [prevTrack, ...prev].slice(0, 20);
+            });
+          }
+        }
+        lastTrackId.current = currentTrack.id;
+      }
+    }
+  }, [currentTrack, mounted]);
+
   const nextTrack = useCallback(() => {
+    // In a live radio, "next" just forces a re-sync or jumps forward
+    // For now, we just re-sync to the current global time
     calculateSync();
   }, [calculateSync]);
 
@@ -42,15 +65,11 @@ export const useStation = () => {
     calculateSync();
   }, [calculateSync]);
 
-  // To prevent hydration mismatch, we ensure the first render matches SSR (TRACKS[0], offset 0)
-  // and then update once mounted.
-  // Wait, if we return DIFFERENT values after mounting, we must handle it correctly.
-
   return {
     currentTrack: mounted ? currentTrack : TRACKS[0],
     initialOffset: mounted ? initialOffset : 0,
     nextTrack,
     prevTrack,
-    hasHistory: false,
+    history,
   };
 };

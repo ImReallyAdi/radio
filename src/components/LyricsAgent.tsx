@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { LyricLine } from "@/hooks/useLyrics";
 import { cn } from "@/lib/utils";
+import { ChevronDown } from "lucide-react";
 
 interface LyricsAgentProps {
   lyrics: LyricLine[] | null;
@@ -11,6 +12,7 @@ interface LyricsAgentProps {
   isLoading: boolean;
   error: string | null;
   albumCover?: string;
+  onClose: () => void;
 }
 
 export const LyricsAgent: React.FC<LyricsAgentProps> = ({
@@ -19,6 +21,7 @@ export const LyricsAgent: React.FC<LyricsAgentProps> = ({
   isLoading,
   error,
   albumCover,
+  onClose,
 }) => {
   const activeIndex = lyrics ? lyrics.findLastIndex((line) => line.time <= currentTime) : -1;
   const containerRef = useRef<HTMLDivElement>(null);
@@ -49,9 +52,21 @@ export const LyricsAgent: React.FC<LyricsAgentProps> = ({
 
   if (error || !lyrics) {
     return (
-      <div className="flex flex-col items-center justify-center h-full text-white/30 text-center px-10">
+      <div className="flex flex-col items-center justify-center h-full text-white/30 text-center px-10 relative">
+        <button
+          onClick={onClose}
+          title="Close"
+          className="absolute top-6 left-6 p-2 hover:bg-white/10 rounded-full transition-colors active:scale-90"
+        >
+          <ChevronDown size={32} />
+        </button>
         <p className="text-xl mb-4">{error || "No lyrics available"}</p>
-        <p className="text-sm">Close the tab to return to player.</p>
+        <button
+          onClick={onClose}
+          className="text-sm px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
+        >
+          Return to player
+        </button>
       </div>
     );
   }
@@ -59,8 +74,15 @@ export const LyricsAgent: React.FC<LyricsAgentProps> = ({
   return (
     <div
       ref={containerRef}
-      className="h-full overflow-y-auto scrollbar-hide py-[45vh] px-6 md:px-8 transition-all duration-500"
+      className="h-full overflow-y-auto scrollbar-hide py-[45vh] px-6 md:px-8 transition-all duration-500 relative"
     >
+      <button
+        onClick={onClose}
+        title="Close"
+        className="fixed top-6 left-6 p-2 hover:bg-white/10 rounded-full transition-colors active:scale-90 z-20"
+      >
+        <ChevronDown size={32} />
+      </button>
       <div className="max-w-2xl mx-auto space-y-6 md:space-y-10">
         {lyrics.map((line, index) => {
           const isActive = index === activeIndex;
@@ -74,14 +96,16 @@ export const LyricsAgent: React.FC<LyricsAgentProps> = ({
               }}
               initial={{ opacity: 0, y: 20 }}
               animate={{
-                opacity: isActive ? 1 : (isBefore ? 0.4 : 0.2),
-                scale: isActive ? 1.05 : 1,
-                filter: isActive ? "blur(0px)" : "blur(1px)",
+                opacity: isActive ? 1 : (isBefore ? 0.4 : 0.15),
+                scale: isActive ? 1.08 : 1,
+                filter: isActive ? "blur(0px)" : "blur(2px)",
+                y: isActive ? 0 : (isBefore ? -10 : 10)
               }}
               transition={{
                 type: "spring",
-                stiffness: 100,
-                damping: 20,
+                stiffness: 120,
+                damping: 24,
+                mass: 0.8
               }}
               className={cn(
                 "text-2xl md:text-5xl font-bold text-center cursor-default transition-colors duration-500 leading-tight",

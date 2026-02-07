@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Play, Pause, SkipBack, SkipForward, Volume2, Share2, Youtube } from "lucide-react";
+import { Play, Pause, SkipBack, SkipForward, Volume2, Share2, Youtube, Music2, ListMusic } from "lucide-react";
 import { motion } from "framer-motion";
 import { BlurFade } from "@/components/ui/blur-fade";
 
@@ -22,6 +22,7 @@ interface UIAgentProps {
   onPrev: () => void;
   onVolumeChange: (volume: number) => void;
   onShowLyrics: () => void;
+  onShowHistory: () => void;
   showLyrics: boolean;
 }
 
@@ -36,6 +37,7 @@ export const UIAgent: React.FC<UIAgentProps> = ({
   onPrev,
   onVolumeChange,
   onShowLyrics,
+  onShowHistory,
   showLyrics,
 }) => {
   const formatTime = (time: number) => {
@@ -46,6 +48,25 @@ export const UIAgent: React.FC<UIAgentProps> = ({
 
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
   const thumbnailUrl = `https://img.youtube.com/vi/${track.id}/maxresdefault.jpg`;
+
+  const handleShare = async () => {
+    const shareData = {
+      title: `${track.title} - ${track.artist}`,
+      text: `Listening to ${track.title} by ${track.artist} on Radio`,
+      url: `https://www.youtube.com/watch?v=${track.id}`,
+    };
+
+    try {
+      if (typeof navigator !== "undefined" && navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(shareData.url);
+        // Simple visual feedback could be added here
+      }
+    } catch (err) {
+      console.error("Error sharing:", err);
+    }
+  };
 
   return (
     <div className={cn(
@@ -132,10 +153,25 @@ export const UIAgent: React.FC<UIAgentProps> = ({
 
         {/* Bottom Bar */}
         <div className="flex items-center justify-between pt-4">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-1 md:gap-4">
             <button
               onClick={onShowLyrics}
-              className="p-2 text-white/40 hover:text-white transition-colors"
+              title="Lyrics"
+              className="p-2 text-white/40 hover:text-white transition-colors active:scale-90"
+            >
+              <Music2 size={20} />
+            </button>
+            <button
+              onClick={onShowHistory}
+              title="Recently Played"
+              className="p-2 text-white/40 hover:text-white transition-colors active:scale-90"
+            >
+              <ListMusic size={20} />
+            </button>
+            <button
+              onClick={handleShare}
+              title="Share"
+              className="p-2 text-white/40 hover:text-white transition-colors active:scale-90"
             >
               <Share2 size={20} />
             </button>
@@ -143,21 +179,22 @@ export const UIAgent: React.FC<UIAgentProps> = ({
               href={`https://youtube.com/watch?v=${track.id}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 text-white/40 hover:text-white transition-colors"
+              title="Open in YouTube"
+              className="p-2 text-white/40 hover:text-white transition-colors active:scale-90"
             >
               <Youtube size={20} />
             </a>
           </div>
 
           <div className="flex items-center gap-3 group">
-            <Volume2 size={18} className="text-white/40" />
+            <Volume2 size={18} className="text-white/40 group-hover:text-white transition-colors" />
             <input
               type="range"
               min="0"
               max="100"
               value={volume}
               onChange={(e) => onVolumeChange(parseInt(e.target.value))}
-              className="w-24 h-1 bg-white/10 rounded-full appearance-none cursor-pointer accent-white"
+              className="w-20 md:w-24 h-1 bg-white/10 rounded-full appearance-none cursor-pointer accent-white"
             />
           </div>
         </div>
