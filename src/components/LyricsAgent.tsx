@@ -10,7 +10,6 @@ interface LyricsAgentProps {
   currentTime: number;
   isLoading: boolean;
   error: string | null;
-  albumCover?: string;
 }
 
 export const LyricsAgent: React.FC<LyricsAgentProps> = ({
@@ -18,9 +17,16 @@ export const LyricsAgent: React.FC<LyricsAgentProps> = ({
   currentTime,
   isLoading,
   error,
-  albumCover,
 }) => {
-  const activeIndex = lyrics ? lyrics.findLastIndex((line) => line.time <= currentTime) : -1;
+  let activeIndex = -1;
+  if (lyrics) {
+    for (let i = lyrics.length - 1; i >= 0; i--) {
+      if (lyrics[i].time <= currentTime) {
+        activeIndex = i;
+        break;
+      }
+    }
+  }
   const containerRef = useRef<HTMLDivElement>(null);
   const lineRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -88,15 +94,6 @@ export const LyricsAgent: React.FC<LyricsAgentProps> = ({
                 isActive ? "text-white" : "text-white/30"
               )}
             >
-              {isActive && albumCover && (
-                <motion.img
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  src={albumCover}
-                  className="w-16 h-16 rounded-lg mx-auto mb-4 shadow-xl"
-                  alt="Album cover"
-                />
-              )}
               {line.text}
             </motion.div>
           );
