@@ -12,6 +12,7 @@ interface PlaybackAgentProps {
   onDurationChange: (duration: number) => void;
   onEnded: () => void;
   onReady: () => void;
+  onTogglePlay: (isPlaying: boolean) => void;
 }
 
 export const PlaybackAgent: React.FC<PlaybackAgentProps> = ({
@@ -23,6 +24,7 @@ export const PlaybackAgent: React.FC<PlaybackAgentProps> = ({
   onDurationChange,
   onEnded,
   onReady,
+  onTogglePlay,
 }) => {
   const playerRef = useRef<YouTubePlayer | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -81,10 +83,16 @@ export const PlaybackAgent: React.FC<PlaybackAgentProps> = ({
   };
 
   const onPlayerStateChange: YouTubeProps["onStateChange"] = (event) => {
-    // 0 is ended
-    if (event.data === 0) {
+    // YouTube state codes:
+    // 1 = playing, 2 = paused, 0 = ended
+    if (event.data === 1) {
+      onTogglePlay(true);
+    } else if (event.data === 2) {
+      onTogglePlay(false);
+    } else if (event.data === 0) {
       onEnded();
     }
+
     if (event.target) {
       onDurationChange(event.target.getDuration());
     }
