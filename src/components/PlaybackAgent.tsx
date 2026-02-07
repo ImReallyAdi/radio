@@ -97,12 +97,12 @@ export const PlaybackAgent: React.FC<PlaybackAgentProps> = ({
   }, []);
 
   const opts: YouTubeProps["opts"] = {
-    height: "0",
-    width: "0",
+    height: "100%",
+    width: "100%",
     playerVars: {
       autoplay: 1,
-      controls: 0,
-      modestbranding: 1,
+      controls: 1,
+      modestbranding: 0,
       rel: 0,
       enablejsapi: 1,
     },
@@ -111,7 +111,7 @@ export const PlaybackAgent: React.FC<PlaybackAgentProps> = ({
   if (!isMounted) return null;
 
   return (
-    <div className="opacity-0 pointer-events-none absolute inset-0 -z-20">
+    <div className="fixed top-4 right-4 w-48 md:w-64 aspect-video rounded-xl overflow-hidden shadow-2xl z-50 border border-white/10 transition-all hover:scale-105">
       <YouTube
         videoId={videoId}
         opts={opts}
