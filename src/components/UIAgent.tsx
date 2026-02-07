@@ -53,13 +53,13 @@ export const UIAgent: React.FC<UIAgentProps> = ({
       showLyrics ? "opacity-0 pointer-events-none scale-95" : "opacity-100"
     )}>
       {/* Album Art Section */}
-      <div className="flex-1 flex items-center justify-center p-8 md:p-12">
+      <div className="flex-1 flex items-center justify-center p-4 md:p-12 overflow-hidden">
         <BlurFade delay={0.2} inView>
           <motion.div
             key={track.id}
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="relative aspect-square w-full max-w-md rounded-2xl overflow-hidden shadow-2xl shadow-black/50 group"
+            className="relative aspect-square w-full max-w-[80vw] md:max-w-md rounded-2xl overflow-hidden shadow-2xl shadow-black/50 group"
           >
             <img
               src={thumbnailUrl}
@@ -72,15 +72,15 @@ export const UIAgent: React.FC<UIAgentProps> = ({
       </div>
 
       {/* Info & Controls Section */}
-      <div className="p-8 pb-12 md:pb-20 space-y-8 bg-gradient-to-t from-black/40 to-transparent">
-        <div className="space-y-2">
+      <div className="p-6 md:p-8 pb-8 md:pb-20 space-y-6 md:space-y-8 bg-gradient-to-t from-black/40 to-transparent">
+        <div className="space-y-1 md:space-y-2">
           <BlurFade delay={0.3} inView>
-            <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">
+            <h1 className="text-2xl md:text-4xl font-bold text-white tracking-tight line-clamp-2">
               {track.title}
             </h1>
           </BlurFade>
           <BlurFade delay={0.4} inView>
-            <h2 className="text-xl md:text-2xl text-white/60 font-medium">
+            <h2 className="text-lg md:text-2xl text-white/60 font-medium line-clamp-1">
               {track.artist}
             </h2>
           </BlurFade>

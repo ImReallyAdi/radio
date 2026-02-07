@@ -59,9 +59,9 @@ export const LyricsAgent: React.FC<LyricsAgentProps> = ({
   return (
     <div
       ref={containerRef}
-      className="h-full overflow-y-auto scrollbar-hide py-[50vh] px-8 transition-all duration-500"
+      className="h-full overflow-y-auto scrollbar-hide py-[45vh] px-6 md:px-8 transition-all duration-500"
     >
-      <div className="max-w-2xl mx-auto space-y-8">
+      <div className="max-w-2xl mx-auto space-y-6 md:space-y-10">
         {lyrics.map((line, index) => {
           const isActive = index === activeIndex;
           const isBefore = index < activeIndex;
@@ -84,7 +84,7 @@ export const LyricsAgent: React.FC<LyricsAgentProps> = ({
                 damping: 20,
               }}
               className={cn(
-                "text-3xl md:text-5xl font-bold text-center cursor-default transition-colors duration-500",
+                "text-2xl md:text-5xl font-bold text-center cursor-default transition-colors duration-500 leading-tight",
                 isActive ? "text-white" : "text-white/30"
               )}
             >
