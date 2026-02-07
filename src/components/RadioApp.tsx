@@ -52,7 +52,7 @@ export default function RadioApp() {
       {/* Main UI Container */}
       <div className="relative z-10 h-full flex flex-col">
         {/* Navigation Bar */}
-        <div className="p-6 flex items-center justify-between">
+        <div className="p-6 pr-56 md:pr-80 flex items-center justify-between">
           {showLyrics && (
             <button
               onClick={() => setShowLyrics(false)}
