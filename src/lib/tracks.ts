@@ -3,6 +3,9 @@ export interface Track {
   title: string;
   artist: string;
   duration: number;
+  itunesId?: string;
+  metadataSearch?: string;
+  lyricsOffset?: number;
 }
 
 function seededRandom(seed: number) {
@@ -27,19 +30,23 @@ const RAW_TRACKS: Track[] = [
     "id": "4NRXx6U8ABQ",
     "title": "Blinding Lights",
     "artist": "The Weeknd",
-    "duration": 200
+    "duration": 262,
+    "itunesId": "1488408163",
+    "lyricsOffset": 21
   },
   {
     "id": "XXYlFuWEuKI",
     "title": "Save Your Tears",
     "artist": "The Weeknd",
-    "duration": 248
+    "duration": 248,
+    "itunesId": "1550181035"
   },
   {
     "id": "H5v3kku4y6Q",
     "title": "As It Was",
     "artist": "Harry Styles",
-    "duration": 167
+    "duration": 167,
+    "itunesId": "1615551350"
   },
   {
     "id": "G7KNmW9a75Y",
