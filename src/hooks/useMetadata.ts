@@ -8,7 +8,12 @@ export interface Metadata {
   artworkUrl: string | null;
 }
 
-export const useMetadata = (initialTitle: string, initialArtist: string) => {
+export const useMetadata = (
+  initialTitle: string,
+  initialArtist: string,
+  itunesId?: string,
+  metadataSearch?: string
+) => {
   const [metadata, setMetadata] = useState<Metadata>({
     title: initialTitle,
     artist: initialArtist,
@@ -20,11 +25,18 @@ export const useMetadata = (initialTitle: string, initialArtist: string) => {
     const fetchMetadata = async () => {
       setIsLoading(true);
       try {
-        const queryStr = initialArtist === "Unknown Artist" || !initialArtist
-          ? initialTitle
-          : `${initialArtist} ${initialTitle}`;
-        const query = encodeURIComponent(queryStr);
-        const response = await fetch(`https://itunes.apple.com/search?term=${query}&entity=song&limit=1`);
+        let url = "";
+        if (itunesId) {
+          url = `https://itunes.apple.com/lookup?id=${itunesId}`;
+        } else {
+          const queryStr = metadataSearch || (initialArtist === "Unknown Artist" || !initialArtist
+            ? initialTitle
+            : `${initialArtist} ${initialTitle}`);
+          const query = encodeURIComponent(queryStr);
+          url = `https://itunes.apple.com/search?term=${query}&entity=song&limit=1`;
+        }
+
+        const response = await fetch(url);
         const data = await response.json();
 
         if (data.results && data.results.length > 0) {
@@ -56,7 +68,7 @@ export const useMetadata = (initialTitle: string, initialArtist: string) => {
     if (initialTitle) {
       fetchMetadata();
     }
-  }, [initialTitle, initialArtist]);
+  }, [initialTitle, initialArtist, itunesId, metadataSearch]);
 
   return { metadata, isLoading };
 };

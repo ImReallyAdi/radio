@@ -22,7 +22,9 @@ export default function RadioApp() {
 
   const { metadata } = useMetadata(
     currentTrack.title,
-    currentTrack.artist
+    currentTrack.artist,
+    currentTrack.itunesId,
+    currentTrack.metadataSearch
   );
 
   const { lyrics, isLoading: lyricsLoading, error: lyricsError } = useLyrics(
@@ -99,7 +101,7 @@ export default function RadioApp() {
               >
                 <LyricsAgent
                   lyrics={lyrics}
-                  currentTime={currentTime}
+                  currentTime={currentTime - (currentTrack.lyricsOffset || 0)}
                   isLoading={lyricsLoading}
                   error={lyricsError}
                 />
