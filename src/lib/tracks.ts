@@ -5,7 +5,24 @@ export interface Track {
   duration: number;
 }
 
-export const TRACKS: Track[] = [
+function seededRandom(seed: number) {
+  return function () {
+    seed = (seed * 9301 + 49297) % 233280;
+    return seed / 233280;
+  };
+}
+
+function deterministicShuffle<T>(array: T[], seed: number): T[] {
+  const shuffled = [...array];
+  const rnd = seededRandom(seed);
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(rnd() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+const RAW_TRACKS: Track[] = [
   { "id": "efxiDBygvdg", "title": "Wish (feat. Trippie Redd)", "artist": "Diplo", "duration": 179 },
   { "id": "c8zq4kAn_O0", "title": "back to friends", "artist": "sombr", "duration": 202 },
   { "id": "SMvmAWECT8U", "title": "DEVIL IS A LIE", "artist": "Tommy Richman", "duration": 132 },
@@ -1171,3 +1188,5 @@ export const TRACKS: Track[] = [
   { "id": "vW8W-u6W9-nr", "title": "Boom", "artist": "Latto", "duration": 181 },
   { "id": "nrW9-vW8W-u6", "title": "Like A Girl", "artist": "Latto", "duration": 166 },
 ];
+
+export const TRACKS = deterministicShuffle(RAW_TRACKS, 42);
