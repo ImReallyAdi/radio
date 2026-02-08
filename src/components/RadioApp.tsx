@@ -47,6 +47,7 @@ export default function RadioApp() {
         onDurationChange={setDuration}
         onEnded={nextTrack}
         onReady={() => setIsPlaying(true)}
+        onTogglePlay={setIsPlaying}
       />
 
       {/* Main UI Container */}
