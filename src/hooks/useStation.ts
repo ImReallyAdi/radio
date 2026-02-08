@@ -8,9 +8,9 @@ export const useStation = () => {
   const [initialOffset, setInitialOffset] = useState(0);
   const [mounted, setMounted] = useState(false);
 
-  const calculateSync = useCallback(() => {
+  const calculateSync = useCallback((nudge = 0) => {
     const totalDuration = TRACKS.reduce((acc, t) => acc + (t.duration || 0), 0);
-    const now = Math.floor(Date.now() / 1000);
+    const now = Math.floor(Date.now() / 1000) + nudge;
     const elapsedTotal = now % totalDuration;
 
     let cumulative = 0;
@@ -35,7 +35,8 @@ export const useStation = () => {
   const currentTrack = TRACKS[currentTrackIndex];
 
   const nextTrack = useCallback(() => {
-    calculateSync();
+    // Nudge forward by 5 seconds to ensure we transition to the next track if we're at the end
+    calculateSync(5);
   }, [calculateSync]);
 
   const prevTrack = useCallback(() => {
