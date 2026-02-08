@@ -21,7 +21,7 @@ function deterministicShuffle<T>(array: T[], seed: number): T[] {
   }
   return shuffled;
 }
-const RAW_TRACKS: Track[] = [
+const Track: Track[] = [
   {
     "id": "efxiDBygvdg",
     "title": "Wish (feat. Trippie Redd)",
