@@ -11,13 +11,21 @@ interface BackgroundAgentProps {
 
 export const BackgroundAgent: React.FC<BackgroundAgentProps> = ({ videoId, artworkUrl }) => {
   const [dominantColor, setDominantColor] = useState<[number, number, number]>([0, 0, 0]);
-  const displayArtwork = artworkUrl || (videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : "");
+  const [currentArtwork, setCurrentArtwork] = useState("");
 
   useEffect(() => {
-    if (!displayArtwork || typeof window === "undefined") return;
+    setCurrentArtwork(artworkUrl || (videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : ""));
+  }, [artworkUrl, videoId]);
+
+  useEffect(() => {
+    if (!currentArtwork || typeof window === "undefined") return;
 
     const img = new Image();
-    img.crossOrigin = "Anonymous";
+    // Only use Anonymous crossOrigin for non-YouTube images to avoid CORS "Load failed" errors in Safari
+    const isYouTube = currentArtwork.includes("youtube.com") || currentArtwork.includes("ytimg.com");
+    if (!isYouTube) {
+      img.crossOrigin = "Anonymous";
+    }
 
     img.onload = () => {
       try {
@@ -33,11 +41,16 @@ export const BackgroundAgent: React.FC<BackgroundAgentProps> = ({ videoId, artwo
     };
 
     img.onerror = () => {
-      console.warn("Failed to load artwork for color extraction:", displayArtwork);
+      // Fallback from maxresdefault to hqdefault if the high-res YouTube thumbnail fails
+      if (currentArtwork.includes("maxresdefault.jpg")) {
+        setCurrentArtwork(currentArtwork.replace("maxresdefault.jpg", "hqdefault.jpg"));
+      } else {
+        console.warn("BackgroundAgent: Failed to load artwork", currentArtwork);
+      }
     };
 
-    img.src = displayArtwork;
-  }, [displayArtwork]);
+    img.src = currentArtwork;
+  }, [currentArtwork]);
 
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden bg-black">
@@ -54,7 +67,7 @@ export const BackgroundAgent: React.FC<BackgroundAgentProps> = ({ videoId, artwo
           <div
             className="absolute inset-0 bg-cover bg-center scale-110 blur-[80px] brightness-50"
             style={{
-              backgroundImage: displayArtwork ? `url(${displayArtwork})` : "none",
+              backgroundImage: currentArtwork ? `url(${currentArtwork})` : "none",
               backgroundColor: `rgb(${dominantColor.join(",")})`
             }}
           />

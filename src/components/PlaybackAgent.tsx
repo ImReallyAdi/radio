@@ -47,14 +47,18 @@ export const PlaybackAgent: React.FC<PlaybackAgentProps> = ({
 
   useEffect(() => {
     if (playerRef.current && typeof playerRef.current.seekTo === 'function') {
-      const currentTime = playerRef.current.getCurrentTime();
-      const diff = Math.abs(currentTime - initialOffset);
-      // Only seek if the difference is more than 2 seconds to avoid infinite loops near the end of a video
-      if (diff > 2) {
-        playerRef.current.seekTo(initialOffset, true);
+      try {
+        const currentTime = playerRef.current.getCurrentTime();
+        const diff = Math.abs(currentTime - initialOffset);
+        // Only seek if the difference is more than 2 seconds to avoid infinite loops near the end of a video
+        if (diff > 2) {
+          playerRef.current.seekTo(initialOffset, true);
+        }
+      } catch (e) {
+        console.warn("PlaybackAgent: Failed to seek", e);
       }
     }
-  }, [videoId, initialOffset]);
+  }, [initialOffset]);
 
   useEffect(() => {
     if (intervalRef.current) {
@@ -100,12 +104,15 @@ export const PlaybackAgent: React.FC<PlaybackAgentProps> = ({
       onTogglePlay(true);
     } else if (event.data === 2) {
       onTogglePlay(false);
-    } else if (event.data === 0) {
-      onEnded();
     }
+    // onEnded is handled by onEnd prop for clarity
 
-    if (event.target) {
-      onDurationChange(event.target.getDuration());
+    if (event.target && event.data !== 0) {
+      try {
+        onDurationChange(event.target.getDuration());
+      } catch {
+        // Ignore duration errors during state changes
+      }
     }
   };
 
@@ -124,6 +131,7 @@ export const PlaybackAgent: React.FC<PlaybackAgentProps> = ({
       modestbranding: 0,
       rel: 0,
       enablejsapi: 1,
+      origin: typeof window !== "undefined" ? window.location.origin : undefined,
     },
   };
 
@@ -132,6 +140,7 @@ export const PlaybackAgent: React.FC<PlaybackAgentProps> = ({
   return (
     <div className="fixed top-4 right-4 w-48 md:w-64 aspect-video rounded-xl overflow-hidden shadow-2xl z-50 border border-white/10 transition-all hover:scale-105">
       <YouTube
+        key={videoId}
         videoId={videoId}
         opts={opts}
         onReady={onPlayerReady}
