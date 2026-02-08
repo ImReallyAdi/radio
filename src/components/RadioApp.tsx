@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { PlaybackAgent } from "./PlaybackAgent";
 import { BackgroundAgent } from "./BackgroundAgent";
 import { UIAgent } from "./UIAgent";
@@ -30,15 +30,19 @@ export default function RadioApp() {
     metadata.title
   );
 
+  const handlePlay = useCallback(() => setIsPlaying(true), []);
+  const handlePause = useCallback(() => setIsPlaying(false), []);
+  const handlePrevious = useCallback(() => {}, []);
+
   useMediaSession({
     title: metadata.title,
     artist: metadata.artist,
     artworkUrl: metadata.artworkUrl || undefined,
     isPlaying,
-    onPlay: () => setIsPlaying(true),
-    onPause: () => setIsPlaying(false),
+    onPlay: handlePlay,
+    onPause: handlePause,
     onNext: nextTrack,
-    onPrevious: () => {},
+    onPrevious: handlePrevious,
   });
 
   return (

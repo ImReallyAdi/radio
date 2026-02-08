@@ -47,7 +47,12 @@ export const PlaybackAgent: React.FC<PlaybackAgentProps> = ({
 
   useEffect(() => {
     if (playerRef.current && typeof playerRef.current.seekTo === 'function') {
-      playerRef.current.seekTo(initialOffset, true);
+      const currentTime = playerRef.current.getCurrentTime();
+      const diff = Math.abs(currentTime - initialOffset);
+      // Only seek if the difference is more than 2 seconds to avoid infinite loops near the end of a video
+      if (diff > 2) {
+        playerRef.current.seekTo(initialOffset, true);
+      }
     }
   }, [videoId, initialOffset]);
 
