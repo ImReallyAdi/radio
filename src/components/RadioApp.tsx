@@ -28,8 +28,8 @@ export default function RadioApp() {
   );
 
   const { lyrics, isLoading: lyricsLoading, error: lyricsError } = useLyrics(
-    metadata.artist,
-    metadata.title
+    currentTrack.artist,
+    currentTrack.title
   );
 
   const handlePlay = useCallback(() => setIsPlaying(true), []);
