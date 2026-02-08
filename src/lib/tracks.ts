@@ -21,7 +21,68 @@ function deterministicShuffle<T>(array: T[], seed: number): T[] {
   }
   return shuffled;
 }
-const Track: Track[] = [
+
+const RAW_TRACKS: Track[] = [
+  {
+    "id": "4NRXx6U8ABQ",
+    "title": "Blinding Lights",
+    "artist": "The Weeknd",
+    "duration": 200
+  },
+  {
+    "id": "XXYlFuWEuKI",
+    "title": "Save Your Tears",
+    "artist": "The Weeknd",
+    "duration": 248
+  },
+  {
+    "id": "H5v3kku4y6Q",
+    "title": "As It Was",
+    "artist": "Harry Styles",
+    "duration": 167
+  },
+  {
+    "id": "G7KNmW9a75Y",
+    "title": "Flowers",
+    "artist": "Miley Cyrus",
+    "duration": 200
+  },
+  {
+    "id": "ic8j13piAhQ",
+    "title": "Cruel Summer",
+    "artist": "Taylor Swift",
+    "duration": 178
+  },
+  {
+    "id": "eVli-tstM5E",
+    "title": "Espresso",
+    "artist": "Sabrina Carpenter",
+    "duration": 175
+  },
+  {
+    "id": "629_M8W_DRE",
+    "title": "Birds of a Feather",
+    "artist": "Billie Eilish",
+    "duration": 210
+  },
+  {
+    "id": "t7bQwwqW-Bs",
+    "title": "A Bar Song (Tipsy)",
+    "artist": "Shaboozey",
+    "duration": 171
+  },
+  {
+    "id": "H58vbez_m4E",
+    "title": "Not Like Us",
+    "artist": "Kendrick Lamar",
+    "duration": 274
+  },
+  {
+    "id": "22tVWwmTie8",
+    "title": "Houdini",
+    "artist": "Eminem",
+    "duration": 287
+  },
   {
     "id": "efxiDBygvdg",
     "title": "Wish (feat. Trippie Redd)",
@@ -96,14 +157,14 @@ const Track: Track[] = [
   },
   {
     "id": "Vk5-c_v4gMU",
-    "title": "ILLIT (아일릿) 'Magnetic' Official MV",
-    "artist": "Unknown Artist",
+    "title": "Magnetic",
+    "artist": "ILLIT",
     "duration": 189
   },
   {
     "id": "1xcvWmN0Pe4",
     "title": "If We Being Rëal",
-    "artist": "Unknown Artist",
+    "artist": "YEAT",
     "duration": 173
   },
   {
@@ -126,7 +187,7 @@ const Track: Track[] = [
   },
   {
     "id": "bPONddpEnBs",
-    "title": "CRAZY (English ver.)",
+    "title": "CRAZY",
     "artist": "Unknown Artist",
     "duration": 165
   },
@@ -150,7 +211,7 @@ const Track: Track[] = [
   },
   {
     "id": "JtBBT8xK-uo",
-    "title": "DICE \\u0026 ROLL",
+    "title": "DICE ROLL",
     "artist": "ODETARI",
     "duration": 121
   },
@@ -180,7 +241,7 @@ const Track: Track[] = [
   },
   {
     "id": "NZffGy4TLno",
-    "title": "Отключаю телефон (Slowed, prod. realmoneyken)",
+    "title": "Отключаю телефон",
     "artist": "INSTASAMKA",
     "duration": 188
   },
@@ -210,44 +271,44 @@ const Track: Track[] = [
   },
   {
     "id": "dawrQnvwMTY",
-    "title": "Shinunoga E-Wa (Not a MV)",
+    "title": "Shinunoga E-Wa",
     "artist": "Fujii Kaze",
     "duration": 192
   },
   {
     "id": "TGgcC5xg9YI",
     "title": "SEE YOU AGAIN featuring Kali Uchis",
-    "artist": "Unknown Artist",
+    "artist": "Tyler The Creator",
     "duration": 203
   },
   {
     "id": "UGYjHg8Xu7U",
-    "title": "I Know (PR1SVX Edit) [Visualizer]",
+    "title": "I Know",
     "artist": "Kanii",
     "duration": 134
   },
   {
     "id": "oIvFXVqtzxg",
-    "title": "Tek It (Sped Up)",
+    "title": "Tek It",
     "artist": "Cafuné",
     "duration": 167
   },
   {
     "id": "aTYovhwxIqI",
-    "title": "Trapped in a Dream (Phonk Remix)",
-    "artist": "RudyWade, Ethan Ross \\u0026 Marin Hoxha",
+    "title": "Trapped in a Dream",
+    "artist": "RudyWade, Ethan Ross & Marin Hoxha",
     "duration": 143
   },
   {
     "id": "4zm45tQd8QI",
-    "title": "DAMNSON | Official Music Video",
+    "title": "DAMNSON",
     "artist": "Hanumankind",
     "duration": 151
   },
   {
     "id": "f1r0XZLNlGQ",
     "title": "One Of The Girls",
-    "artist": "The Weeknd, JENNIE \\u0026 Lily Rose Depp",
+    "artist": "The Weeknd, JENNIE & Lily Rose Depp",
     "duration": 245
   },
   {
@@ -259,7 +320,7 @@ const Track: Track[] = [
   {
     "id": "_Cu9Df_9Zvg",
     "title": "GBP",
-    "artist": "Central Cee \\u0026 21 Savage",
+    "artist": "Central Cee & 21 Savage",
     "duration": 194
   },
   {
@@ -330,8 +391,8 @@ const Track: Track[] = [
   },
   {
     "id": "9Zj0JOHJR-s",
-    "title": "My Ordinary Life-The Living Tombstone",
-    "artist": "Unknown Artist",
+    "title": "My Ordinary Life",
+    "artist": "The Living Tombstone",
     "duration": 246
   },
   {
@@ -343,7 +404,7 @@ const Track: Track[] = [
   {
     "id": "K6BRna4_bmg",
     "title": "edamame",
-    "artist": "bbno$ \\u0026 Rich Brian",
+    "artist": "bbno$ & Rich Brian",
     "duration": 141
   },
   {
@@ -354,7 +415,7 @@ const Track: Track[] = [
   },
   {
     "id": "uXNEN-hGkZU",
-    "title": "Go To Sleep ft. Parimal Shais | DefJam India",
+    "title": "Go To Sleep ft. Parimal Shais",
     "artist": "Hanumankind",
     "duration": 263
   },
@@ -366,7 +427,7 @@ const Track: Track[] = [
   },
   {
     "id": "LGYLQ4zn95g",
-    "title": "Nemzzz Ft. Central Cee (Prod By lantibeatz)",
+    "title": "Nemzzz Ft. Central Cee",
     "artist": "DILEMMA",
     "duration": 149
   },
@@ -385,7 +446,7 @@ const Track: Track[] = [
   {
     "id": "fYD7YsSRHOY",
     "title": "RATHER LIE",
-    "artist": "Playboi Carti \\u0026 The Weeknd",
+    "artist": "Playboi Carti & The Weeknd",
     "duration": 210
   },
   {
@@ -438,7 +499,7 @@ const Track: Track[] = [
   },
   {
     "id": "ygTZZpVkmKg",
-    "title": "After Hours (Audio)",
+    "title": "After Hours",
     "artist": "The Weeknd",
     "duration": 362
   },
@@ -511,7 +572,7 @@ const Track: Track[] = [
   {
     "id": "acYUqMd9k2I",
     "title": "Glock In My Lap",
-    "artist": "21 Savage \\u0026 Metro Boomin",
+    "artist": "21 Savage & Metro Boomin",
     "duration": 199
   },
   {
@@ -576,7 +637,7 @@ const Track: Track[] = [
   },
   {
     "id": "ki0Ocze98U8",
-    "title": "One Dance ft. Wizkid \\u0026 Kyla",
+    "title": "One Dance ft. Wizkid & Kyla",
     "artist": "Drake",
     "duration": 175
   },
@@ -594,7 +655,7 @@ const Track: Track[] = [
   },
   {
     "id": "BM0dbamY2Rw",
-    "title": "Now Or Never (heavenly audio) | Official Audio",
+    "title": "Now Or Never",
     "artist": "TKANDZ",
     "duration": 124
   },
@@ -605,3 +666,5 @@ const Track: Track[] = [
     "duration": 197
   }
 ];
+
+export const TRACKS = deterministicShuffle(RAW_TRACKS, 42);
