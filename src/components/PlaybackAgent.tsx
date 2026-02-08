@@ -46,6 +46,12 @@ export const PlaybackAgent: React.FC<PlaybackAgentProps> = ({
   }, [volume]);
 
   useEffect(() => {
+    if (playerRef.current && typeof playerRef.current.seekTo === 'function') {
+      playerRef.current.seekTo(initialOffset, true);
+    }
+  }, [videoId, initialOffset]);
+
+  useEffect(() => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
@@ -84,13 +90,13 @@ export const PlaybackAgent: React.FC<PlaybackAgentProps> = ({
 
   const onPlayerStateChange: YouTubeProps["onStateChange"] = (event) => {
     // YouTube state codes:
-    // 1 = playing, 2 = paused, 0 = ended
-       <YouTube
-         videoId={videoId}
-         opts={opts}
-         onReady={onPlayerReady}
-         onStateChange={onPlayerStateChange}
-       />
+    // 1 = playing, 2 = paused, 0 = ended, 3 = buffering, 5 = cued
+    if (event.data === 1) {
+      onTogglePlay(true);
+    } else if (event.data === 2) {
+      onTogglePlay(false);
+    } else if (event.data === 0) {
+      onEnded();
     }
 
     if (event.target) {

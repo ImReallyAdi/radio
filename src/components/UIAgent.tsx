@@ -64,16 +64,16 @@ export const UIAgent: React.FC<UIAgentProps> = ({
 
   return (
     <div className={cn(
-      "flex flex-col h-full transition-all duration-700"
+      "flex flex-col landscape:flex-row h-full transition-all duration-700 items-center overflow-hidden"
     )}>
       {/* Album Art Section */}
-      <div className="flex-1 flex items-center justify-center p-4 md:p-12 overflow-hidden">
+      <div className="flex-1 flex items-center justify-center p-4 md:p-12 landscape:p-8 overflow-hidden w-full landscape:w-auto">
         <BlurFade delay={0.2} inView>
           <motion.div
             key={track.id}
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="relative aspect-square w-full max-w-[80vw] md:max-w-md rounded-2xl overflow-hidden shadow-2xl shadow-black/50 group"
+            className="relative aspect-square w-full max-w-[80vw] md:max-w-md landscape:max-w-[45vh] rounded-2xl overflow-hidden shadow-2xl shadow-black/50 group"
           >
             <img
               src={displayArtwork}
@@ -86,15 +86,15 @@ export const UIAgent: React.FC<UIAgentProps> = ({
       </div>
 
       {/* Info & Controls Section */}
-      <div className="p-6 md:p-8 pb-8 md:pb-20 space-y-6 md:space-y-8 bg-gradient-to-t from-black/40 to-transparent">
-        <div className="space-y-1 md:space-y-2">
+      <div className="p-6 md:p-8 pb-8 md:pb-20 landscape:pb-8 space-y-6 md:space-y-8 bg-gradient-to-t landscape:bg-gradient-to-l from-black/40 to-transparent w-full landscape:flex-1 landscape:max-w-xl">
+        <div className="space-y-1 md:space-y-2 landscape:text-left">
           <BlurFade delay={0.3} inView>
-            <h1 className="text-2xl md:text-4xl font-bold text-white tracking-tight line-clamp-2">
+            <h1 className="text-2xl md:text-4xl landscape:text-3xl font-bold text-white tracking-tight line-clamp-2">
               {track.title}
             </h1>
           </BlurFade>
           <BlurFade delay={0.4} inView>
-            <h2 className="text-lg md:text-2xl text-white/60 font-medium line-clamp-1">
+            <h2 className="text-lg md:text-2xl landscape:text-xl text-white/60 font-medium line-clamp-1">
               {track.artist}
             </h2>
           </BlurFade>
@@ -124,7 +124,7 @@ export const UIAgent: React.FC<UIAgentProps> = ({
         </div>
 
         {/* Main Controls */}
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center landscape:justify-start">
           <button
             onClick={onTogglePlay}
             className="p-6 bg-white text-black rounded-full hover:scale-105 transition-transform active:scale-95 shadow-xl"

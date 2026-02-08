@@ -14,22 +14,29 @@ export const BackgroundAgent: React.FC<BackgroundAgentProps> = ({ videoId, artwo
   const displayArtwork = artworkUrl || (videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : "");
 
   useEffect(() => {
-    if (!displayArtwork) return;
+    if (!displayArtwork || typeof window === "undefined") return;
 
     const img = new Image();
     img.crossOrigin = "Anonymous";
-    img.src = displayArtwork;
+
     img.onload = () => {
       try {
+        if (!img) return;
         const colorThief = new ColorThief();
         const color = colorThief.getColor(img);
         if (color) {
           setDominantColor(color);
         }
-      } catch {
-        // Silently fail for color extraction, default color remains
+      } catch (err) {
+        console.warn("Color extraction failed:", err);
       }
     };
+
+    img.onerror = () => {
+      console.warn("Failed to load artwork for color extraction:", displayArtwork);
+    };
+
+    img.src = displayArtwork;
   }, [displayArtwork]);
 
   return (
