@@ -85,12 +85,12 @@ export const PlaybackAgent: React.FC<PlaybackAgentProps> = ({
   const onPlayerStateChange: YouTubeProps["onStateChange"] = (event) => {
     // YouTube state codes:
     // 1 = playing, 2 = paused, 0 = ended
-    if (event.data === 1) {
-      onTogglePlay(true);
-    } else if (event.data === 2) {
-      onTogglePlay(false);
-    } else if (event.data === 0) {
-      onEnded();
+       <YouTube
+         videoId={videoId}
+         opts={opts}
+         onReady={onPlayerReady}
+         onStateChange={onPlayerStateChange}
+       />
     }
 
     if (event.target) {
