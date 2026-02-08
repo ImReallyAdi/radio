@@ -8,6 +8,7 @@ import { LyricsAgent } from "./LyricsAgent";
 import { useStation } from "@/hooks/useStation";
 import { useLyrics } from "@/hooks/useLyrics";
 import { useMetadata } from "@/hooks/useMetadata";
+import { useMediaSession } from "@/hooks/useMediaSession";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 
@@ -28,6 +29,17 @@ export default function RadioApp() {
     metadata.artist,
     metadata.title
   );
+
+  useMediaSession({
+    title: metadata.title,
+    artist: metadata.artist,
+    artworkUrl: metadata.artworkUrl || undefined,
+    isPlaying,
+    onPlay: () => setIsPlaying(true),
+    onPause: () => setIsPlaying(false),
+    onNext: nextTrack,
+    onPrevious: () => {},
+  });
 
   return (
     <main className="relative h-screen w-full overflow-hidden text-white selection:bg-white/20">
