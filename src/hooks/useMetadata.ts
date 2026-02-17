@@ -25,21 +25,16 @@ export const useMetadata = (
     const fetchMetadata = async () => {
       setIsLoading(true);
       try {
-        let url = "";
-        if (itunesId) {
-          url = `https://itunes.apple.com/lookup?id=${itunesId}`;
-        } else {
-          const queryStr = metadataSearch || (initialArtist === "Unknown Artist" || !initialArtist
-            ? initialTitle
-            : `${initialArtist} ${initialTitle}`);
-          const query = encodeURIComponent(queryStr);
-          url = `https://itunes.apple.com/search?term=${query}&entity=song&limit=1`;
-        }
+        const queryStr = metadataSearch || (initialArtist === "Unknown Artist" || !initialArtist
+          ? initialTitle
+          : `${initialArtist} ${initialTitle}`);
+        const query = encodeURIComponent(queryStr);
+        const url = `https://api.popcat.xyz/v2/itunes?q=${query}`;
 
         const response = await fetch(url);
         const data = await response.json();
 
-        if (data.results && data.results.length > 0) {
+        if (data && data.resultCount > 0) {
           const result = data.results[0];
           setMetadata({
             title: result.trackName || initialTitle,

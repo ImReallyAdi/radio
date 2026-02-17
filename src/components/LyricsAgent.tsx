@@ -80,14 +80,15 @@ export const LyricsAgent: React.FC<LyricsAgentProps> = ({
               }}
               initial={{ opacity: 0, y: 20 }}
               animate={{
-                opacity: isActive ? 1 : (isBefore ? 0.4 : 0.2),
-                scale: isActive ? 1.05 : 1,
-                filter: isActive ? "blur(0px)" : "blur(1px)",
+                opacity: isActive ? 1 : (isBefore ? 0.6 : 0.3),
+                scale: isActive ? 1.02 : 1,
+                filter: isActive ? "blur(0px)" : "blur(0.5px)",
               }}
               transition={{
                 type: "spring",
-                stiffness: 100,
-                damping: 20,
+                stiffness: 50,
+                damping: 25,
+                mass: 1,
               }}
               className={cn(
                 "text-2xl md:text-5xl font-bold text-center cursor-default transition-colors duration-500 leading-tight",

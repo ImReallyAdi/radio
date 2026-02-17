@@ -25,8 +25,25 @@ export const useLyrics = (artist: string, title: string) => {
         const data = await response.json();
 
         if (data && data.length > 0) {
-          // Find the best match (ideally one with syncedLyrics)
-          const match = data.find((item: { syncedLyrics?: string }) => item.syncedLyrics) || data[0];
+          // Find the best match based on artist and title similarity
+          const bestMatch = data.reduce((best: { item: any; score: number } | null, item: any) => {
+            const itemArtist = item.artistName?.toLowerCase() || '';
+            const itemTitle = item.trackName?.toLowerCase() || '';
+            const queryArtist = artist.toLowerCase();
+            const queryTitle = title.toLowerCase();
+
+            const artistMatch = itemArtist.includes(queryArtist) || queryArtist.includes(itemArtist);
+            const titleMatch = itemTitle.includes(queryTitle) || queryTitle.includes(itemTitle);
+
+            const score = (artistMatch ? 1 : 0) + (titleMatch ? 1 : 0);
+
+            if (!best || score > best.score) {
+              return { item, score };
+            }
+            return best;
+          }, null as { item: any; score: number } | null);
+
+          const match = bestMatch?.item || data.find((item: { syncedLyrics?: string }) => item.syncedLyrics) || data[0];
 
           if (match.syncedLyrics) {
             const lines = parseLRC(match.syncedLyrics);
@@ -60,7 +77,7 @@ export const useLyrics = (artist: string, title: string) => {
   const parseLRC = (lrc: string): LyricLine[] => {
     const lines = lrc.split("\n");
     const result: LyricLine[] = [];
-    const timeRegex = /\[(\d+):(\d+\.\d+)\]/;
+    const timeRegex = /\[(\d+):(\d+(?:\.\d+)?)\]/;
 
     lines.forEach((line) => {
       const match = timeRegex.exec(line);
