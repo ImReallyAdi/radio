@@ -26,9 +26,10 @@ export const useLyrics = (artist: string, title: string) => {
 
         if (data && data.length > 0) {
           // Find the best match based on artist and title similarity
-          const bestMatch = data.reduce((best: { item: any; score: number } | null, item: any) => {
-            const itemArtist = item.artistName?.toLowerCase() || '';
-            const itemTitle = item.trackName?.toLowerCase() || '';
+          const bestMatch = data.reduce((best: { item: unknown; score: number } | null, item: unknown) => {
+            const itemObj = item as { artistName?: string; trackName?: string; syncedLyrics?: string };
+            const itemArtist = itemObj.artistName?.toLowerCase() || '';
+            const itemTitle = itemObj.trackName?.toLowerCase() || '';
             const queryArtist = artist.toLowerCase();
             const queryTitle = title.toLowerCase();
 
@@ -41,9 +42,9 @@ export const useLyrics = (artist: string, title: string) => {
               return { item, score };
             }
             return best;
-          }, null as { item: any; score: number } | null);
+          }, null as { item: unknown; score: number } | null);
 
-          const match = bestMatch?.item || data.find((item: { syncedLyrics?: string }) => item.syncedLyrics) || data[0];
+          const match = bestMatch?.item as { syncedLyrics?: string; plainLyrics?: string } || data.find((item: unknown) => (item as { syncedLyrics?: string }).syncedLyrics) as { syncedLyrics?: string; plainLyrics?: string } || data[0] as { syncedLyrics?: string; plainLyrics?: string };
 
           if (match.syncedLyrics) {
             const lines = parseLRC(match.syncedLyrics);

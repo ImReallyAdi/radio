@@ -28,6 +28,14 @@ export const PlaybackAgent: React.FC<PlaybackAgentProps> = ({
 }) => {
   const playerRef = useRef<YouTubePlayer | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [loadedVideoId, setLoadedVideoId] = useState(videoId);
+
+  useEffect(() => {
+    if (playerRef.current && loadedVideoId !== videoId) {
+      setLoadedVideoId(videoId);
+      playerRef.current.loadVideoById(videoId);
+    }
+  }, [videoId, loadedVideoId]);
 
   useEffect(() => {
     if (playerRef.current) {
@@ -140,7 +148,6 @@ export const PlaybackAgent: React.FC<PlaybackAgentProps> = ({
   return (
     <div className="fixed top-4 right-4 w-48 md:w-64 aspect-video rounded-xl overflow-hidden shadow-2xl z-50 border border-white/10 transition-all hover:scale-105">
       <YouTube
-        key={videoId}
         videoId={videoId}
         opts={opts}
         onReady={onPlayerReady}
